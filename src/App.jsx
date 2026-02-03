@@ -11,7 +11,6 @@ import Home from './pages/Home';
 const App = () => {
   return (
     <div className="antialiased text-white bg-background min-h-screen selection:bg-primary/30 selection:text-white">
-      <CustomCursor />
       <Navbar />
       <Home />
       <Footer />

@@ -30,7 +30,7 @@ const Navbar = () => {
         >
             <div className="container mx-auto px-6 flex items-center justify-between">
                 <a href="#" className="text-2xl font-bold tracking-tighter cursor-pointer">
-                    Dev<span className="text-primary">.</span>io
+                    Furious
                 </a>
 
                 {/* Desktop Menu */}
