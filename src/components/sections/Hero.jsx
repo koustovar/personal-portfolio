@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Button from '../ui/Button';
 import MagneticButton from '../ui/MagneticButton';
 import gsap from 'gsap';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
     const containerRef = useRef(null);
@@ -60,7 +61,7 @@ const Hero = () => {
                     transition={{ duration: 0.8, delay: 0.6 }}
                     className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed"
                 >
-                    I craft high-performance websites and applications with a focus on motion, aesthetics, and user experience.
+                    Specializing in high-performance <span className="text-white font-medium">Frontend Engineering</span>. I craft immersive web experiences with a focus on motion, pixel-perfection, and clean logic.
                 </motion.p>
 
                 <motion.div
@@ -70,10 +71,14 @@ const Hero = () => {
                     className="flex flex-col md:flex-row items-center justify-center gap-4"
                 >
                     <MagneticButton>
-                        <Button className="min-w-[160px]">View Projects</Button>
+                        <Link to="/all-projects">
+                            <Button className="min-w-[160px]">View Projects</Button>
+                        </Link>
                     </MagneticButton>
                     <MagneticButton>
-                        <Button variant="outline" className="min-w-[160px]">Contact Me</Button>
+                        <a href="#contact">
+                            <Button variant="outline" className="min-w-[160px]">Contact Me</Button>
+                        </a>
                     </MagneticButton>
                 </motion.div>
             </div>
@@ -83,9 +88,9 @@ const Hero = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2"
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:block"
             >
-                <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-white/50 to-transparent" />
+                <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-primary/50 to-transparent" />
             </motion.div>
         </section>
     );

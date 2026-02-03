@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
     return (
-        <footer className="bg-surface py-12 border-t border-white/5">
+        <footer className="bg-surface py-12 border-t border-primary/10">
             <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="text-center md:text-left">
                     <h3 className="text-xl font-bold mb-2">Furious</h3>

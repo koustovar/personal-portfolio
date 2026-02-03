@@ -31,7 +31,7 @@ const Contact = () => {
                     </MagneticButton>
                 </div>
 
-                <div className="mt-24 pt-12 border-t border-white/5 flex flex-wrap justify-center gap-12 text-gray-400">
+                <div className="mt-24 pt-12 border-t border-primary/10 flex flex-wrap justify-center gap-12 text-gray-400">
                     <a href="#" className="hover:text-white transition-colors flex items-center gap-2">Instagram <ArrowRight className="w-4 h-4 -rotate-45" /></a>
                     <a href="#" className="hover:text-white transition-colors flex items-center gap-2">LinkedIn <ArrowRight className="w-4 h-4 -rotate-45" /></a>
                     <a href="#" className="hover:text-white transition-colors flex items-center gap-2">Twitter <ArrowRight className="w-4 h-4 -rotate-45" /></a>
