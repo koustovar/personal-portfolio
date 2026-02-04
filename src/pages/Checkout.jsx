@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
@@ -8,7 +8,6 @@ import {
     ChevronRight,
     CreditCard,
     MapPin,
-    Phone,
     User,
     ShieldCheck,
     ArrowLeft,
@@ -23,6 +22,7 @@ import Button from '../components/ui/Button';
 const Checkout = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useAuth();
 
     const [template, setTemplate] = useState(null);
@@ -35,19 +35,17 @@ const Checkout = () => {
         firstName: user?.displayName?.split(' ')[0] || '',
         lastName: user?.displayName?.split(' ').slice(1).join(' ') || '',
         email: user?.email || '',
-        phone: '',
-        address: '',
-        city: '',
-        state: '',
-        zip: '',
+        deliveryEmail: user?.email || '',
+        deliveryEmailConfirm: '',
         cardNumber: '',
         expiry: '',
         cvc: ''
     });
+    const [emailError, setEmailError] = useState('');
 
     useEffect(() => {
         if (!user && !loading) {
-            navigate('/marketplace');
+            navigate('/login', { state: { from: location } });
             return;
         }
 
@@ -92,6 +90,18 @@ const Checkout = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Reset and check errors for Step 1
+        if (step === 1) {
+            if (formData.deliveryEmail !== formData.deliveryEmailConfirm) {
+                setEmailError('Delivery emails do not match');
+                return;
+            }
+            setEmailError('');
+            nextStep();
+            return;
+        }
+
         if (step < 3) {
             nextStep();
             return;
@@ -103,14 +113,8 @@ const Checkout = () => {
             const orderData = {
                 userId: user.uid,
                 userEmail: user.email,
+                deliveryEmail: formData.deliveryEmail,
                 customerName: `${formData.firstName} ${formData.lastName}`,
-                phone: formData.phone,
-                shippingAddress: {
-                    address: formData.address,
-                    city: formData.city,
-                    state: formData.state,
-                    zip: formData.zip
-                },
                 templateId: template.id,
                 templateTitle: template.title,
                 price: template.price,
@@ -121,11 +125,10 @@ const Checkout = () => {
 
             const orderRef = await addDoc(collection(db, 'orders'), orderData);
 
-            // 2. Update User Profile with address (optional)
+            // 2. Update User Profile with last delivery email
             const userRef = doc(db, 'users', user.uid);
             await setDoc(userRef, {
-                lastAddress: formData.address,
-                lastPhone: formData.phone
+                lastDeliveryEmail: formData.deliveryEmail
             }, { merge: true });
 
             // 3. Success redirect
@@ -175,7 +178,6 @@ const Checkout = () => {
                             <h1 className="text-4xl font-black text-white">Complete Your <span className="text-primary">Order</span></h1>
                         </div>
 
-                        {/* Stepper Progress */}
                         <div className="flex items-center gap-4 mb-12">
                             {[1, 2, 3].map((s) => (
                                 <React.Fragment key={s}>
@@ -184,7 +186,7 @@ const Checkout = () => {
                                             {s}
                                         </div>
                                         <span className="hidden sm:inline font-bold text-xs uppercase tracking-widest">
-                                            {s === 1 ? 'Contact' : s === 2 ? 'Shipping' : 'Payment'}
+                                            {s === 1 ? 'Contact' : s === 2 ? 'Delivery' : 'Payment'}
                                         </span>
                                     </div>
                                     {s < 3 && <div className={`flex-1 h-px ${step > s ? 'bg-primary' : 'bg-white/5'}`} />}
@@ -218,15 +220,29 @@ const Checkout = () => {
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Email Address</label>
-                                                    <input required name="email" value={formData.email} disabled type="email" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 opacity-50 cursor-not-allowed" />
+                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1 text-primary animate-pulse">Delivery Email</label>
+                                                    <input
+                                                        required
+                                                        name="deliveryEmail"
+                                                        value={formData.deliveryEmail}
+                                                        onChange={handleInput}
+                                                        type="email"
+                                                        placeholder="email@example.com"
+                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-primary focus:outline-none transition-colors"
+                                                    />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Phone Number</label>
-                                                    <div className="relative">
-                                                        <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                                                        <input required name="phone" value={formData.phone} onChange={handleInput} type="tel" placeholder="+1 (555) 000-0000" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-6 focus:border-primary focus:outline-none transition-colors" />
-                                                    </div>
+                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1 text-primary animate-pulse">Confirm Delivery Email</label>
+                                                    <input
+                                                        required
+                                                        name="deliveryEmailConfirm"
+                                                        value={formData.deliveryEmailConfirm}
+                                                        onChange={handleInput}
+                                                        type="email"
+                                                        placeholder="Re-enter email"
+                                                        className={`w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-primary focus:outline-none transition-colors ${emailError ? 'border-red-500 bg-red-500/5' : ''}`}
+                                                    />
+                                                    {emailError && <p className="text-[10px] text-red-500 font-bold uppercase tracking-wider pl-1">{emailError}</p>}
                                                 </div>
                                             </div>
                                         </div>
@@ -241,29 +257,21 @@ const Checkout = () => {
                                         exit={{ opacity: 0, x: -20 }}
                                         className="space-y-6"
                                     >
-                                        <div className="bg-surface/30 p-8 rounded-[2rem] border border-white/5 backdrop-blur-xl">
-                                            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                                                <MapPin className="w-5 h-5 text-primary" /> Delivery Details
-                                            </h3>
-                                            <div className="space-y-4">
-                                                <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Street Address</label>
-                                                    <input required name="address" value={formData.address} onChange={handleInput} type="text" placeholder="123 Digital Way" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-primary focus:outline-none transition-colors" />
-                                                </div>
-                                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                                    <div className="space-y-2 col-span-2 md:col-span-1">
-                                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">City</label>
-                                                        <input required name="city" value={formData.city} onChange={handleInput} type="text" placeholder="Tech City" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-primary focus:outline-none transition-colors" />
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">State</label>
-                                                        <input required name="state" value={formData.state} onChange={handleInput} type="text" placeholder="NY" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-primary focus:outline-none transition-colors" />
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Zip Code</label>
-                                                        <input required name="zip" value={formData.zip} onChange={handleInput} type="text" placeholder="10001" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-primary focus:outline-none transition-colors" />
-                                                    </div>
-                                                </div>
+                                        <div className="bg-surface/30 p-8 rounded-[2rem] border border-white/5 backdrop-blur-xl text-center">
+                                            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-primary/20">
+                                                <CheckCircle className="w-10 h-10 text-primary" />
+                                            </div>
+                                            <h3 className="text-2xl font-bold text-white mb-2">Confirm Delivery Email</h3>
+                                            <p className="text-gray-400 mb-8">Please confirm that your digital assets should be sent to the email address below.</p>
+
+                                            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-8 inline-block mx-auto min-w-[300px]">
+                                                <p className="text-xs text-gray-500 uppercase font-black tracking-widest mb-2">Selected Email</p>
+                                                <p className="text-xl font-bold text-primary">{formData.deliveryEmail}</p>
+                                            </div>
+
+                                            <div className="flex items-center justify-center gap-2 text-xs text-gray-500 font-medium">
+                                                <ShieldCheck className="w-4 h-4 text-green-500" />
+                                                Verified & Encrypted Delivery
                                             </div>
                                         </div>
                                     </motion.div>
@@ -329,8 +337,10 @@ const Checkout = () => {
                                         <Loader2 className="w-6 h-6 animate-spin" />
                                     ) : step === 3 ? (
                                         <>Complete Purchase <CheckCircle className="w-5 h-5" /></>
+                                    ) : step === 2 ? (
+                                        <>Confirm & Proceed <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>
                                     ) : (
-                                        <>Continue to {step === 1 ? 'Shipping' : 'Payment'} <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>
+                                        <>Continue to Delivery <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>
                                     )}
                                 </Button>
                             </div>
@@ -385,8 +395,8 @@ const Checkout = () => {
                     </div>
 
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

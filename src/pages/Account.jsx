@@ -57,9 +57,14 @@ const Account = () => {
                     </div>
                     <h2 className="text-3xl font-bold text-white mb-4">Secret Access</h2>
                     <p className="text-gray-400 mb-8">Please log in to your account to view your project dashboard and order history.</p>
-                    <Link to="/marketplace">
-                        <Button className="w-full py-4 text-lg">Go to Marketplace</Button>
-                    </Link>
+                    <div className="grid grid-cols-1 gap-4">
+                        <Link to="/login">
+                            <Button className="w-full py-4 text-lg">Sign In</Button>
+                        </Link>
+                        <Link to="/signup">
+                            <Button variant="outline" className="w-full py-4 text-lg">Create Account</Button>
+                        </Link>
+                    </div>
                 </motion.div>
             </div>
         );

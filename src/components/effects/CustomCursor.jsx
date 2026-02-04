@@ -15,13 +15,13 @@ const CustomCursor = () => {
             gsap.to(cursor, {
                 x: e.clientX,
                 y: e.clientY,
-                duration: 0.05,
+                duration: 0.0005,
                 ease: "power2.out"
             });
             gsap.to(follower, {
                 x: e.clientX,
                 y: e.clientY,
-                duration: 0.15,
+                duration: 0.05,
                 ease: "power3.out"
             });
         };

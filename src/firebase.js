@@ -14,13 +14,20 @@ const firebaseConfig = {
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Check if environment variables are loaded
+const isConfigValid = firebaseConfig.projectId && firebaseConfig.apiKey;
 
-// Initialize services
-export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
-export const db = getFirestore(app);
-export const auth = getAuth(app);
-export const storage = getStorage(app);
+if (!isConfigValid) {
+    console.error("Firebase Configuration Error: Some environment variables are missing. Please check your .env file and RESTART the dev server (Ctrl+C and npm run dev).");
+}
+
+// Initialize Firebase only if config is valid to prevent fatal crash
+const app = isConfigValid ? initializeApp(firebaseConfig) : null;
+
+// Initialize services safely
+export const analytics = (app && typeof window !== 'undefined') ? getAnalytics(app) : null;
+export const db = app ? getFirestore(app) : null;
+export const auth = app ? getAuth(app) : null;
+export const storage = app ? getStorage(app) : null;
 
 export default app;

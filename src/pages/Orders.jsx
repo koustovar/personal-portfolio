@@ -197,12 +197,12 @@ const Orders = () => {
                                     </div>
 
                                     {/* Detailed breakdown for 'Real' marketplace experience */}
-                                    {(order.shippingAddress || order.phone) && (
+                                    {(order.shippingAddress || order.deliveryEmail) && (
                                         <div className="px-8 pb-8 pt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-white/[0.01] border-t border-white/5">
-                                            {order.phone && (
+                                            {order.deliveryEmail && (
                                                 <div className="space-y-1">
-                                                    <p className="text-[10px] text-gray-600 uppercase font-black tracking-widest">Contact Phone</p>
-                                                    <p className="text-sm text-gray-300 font-medium">{order.phone}</p>
+                                                    <p className="text-[10px] text-gray-600 uppercase font-black tracking-widest">Delivery Email</p>
+                                                    <p className="text-sm text-gray-300 font-medium">{order.deliveryEmail}</p>
                                                 </div>
                                             )}
                                             {order.shippingAddress && (

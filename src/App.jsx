@@ -11,6 +11,8 @@ import TemplateDetail from './pages/TemplateDetail';
 import Checkout from './pages/Checkout';
 import Account from './pages/Account';
 import Orders from './pages/Orders';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 const App = () => {
   return (
@@ -27,6 +29,8 @@ const App = () => {
             <Route path="/checkout/:id" element={<Checkout />} />
             <Route path="/account" element={<Account />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
           </Routes>
           <Footer />
         </div>
