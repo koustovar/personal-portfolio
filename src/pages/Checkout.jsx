@@ -92,9 +92,21 @@ const Checkout = () => {
         }
         setIsSubmitting(true);
 
+        const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+
+        console.log("Initializing Razorpay with Key:", razorpayKey ? `${razorpayKey.substring(0, 8)}...` : "UNDEFINED");
+
+        if (!razorpayKey || razorpayKey === 'undefined') {
+            const errorMsg = "Razorpay Key ID is missing. Please check your .env file and ensure VITE_RAZORPAY_KEY_ID is set, then restart your dev server.";
+            console.error(errorMsg);
+            alert(errorMsg);
+            setIsSubmitting(false);
+            return;
+        }
+
         const options = {
-            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-            amount: template.price * 100, // Razorpay works in paise
+            key: razorpayKey,
+            amount: (template.price || 0) * 100, // Razorpay works in paise
             currency: "USD", // Or "INR" if applicable, but prices seem to be in USD
             name: "Furious.in",
             description: `Purchase of ${template?.title || 'Digital Template'}`,
