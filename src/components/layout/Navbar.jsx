@@ -9,7 +9,7 @@ import { LogOut, User, ShoppingBag, LogIn } from 'lucide-react';
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { user, loading, logout } = useAuth();
+    const { user, userData, loading, logout } = useAuth();
     const location = useLocation();
 
     useEffect(() => {
@@ -65,6 +65,15 @@ const Navbar = () => {
                                 {link.name}
                             </Link>
                         ))}
+
+                        {userData?.role === 'admin' && (
+                            <Link
+                                to="/admin"
+                                className={`text-sm font-medium transition-colors cursor-pointer ${location.pathname === '/admin' ? 'text-primary' : 'text-gray-300 hover:text-white'}`}
+                            >
+                                Admin
+                            </Link>
+                        )}
 
                         {user && (
                             <Link
@@ -161,6 +170,15 @@ const Navbar = () => {
                                         {link.name}
                                     </Link>
                                 ))}
+                                {userData?.role === 'admin' && (
+                                    <Link
+                                        to="/admin"
+                                        className="text-2xl font-bold text-primary"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        Admin Terminal
+                                    </Link>
+                                )}
                                 {user && (
                                     <Link
                                         to="/orders"

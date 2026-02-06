@@ -5,6 +5,7 @@ import CustomCursor from './components/effects/CustomCursor';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import AdBlockDetector from './components/utils/AdBlockDetector';
+import AdminRoute from './components/auth/AdminRoute';
 import { Loader2 } from 'lucide-react';
 
 // Lazy load pages
@@ -17,6 +18,7 @@ const Account = lazy(() => import('./pages/Account'));
 const Orders = lazy(() => import('./pages/Orders'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -44,6 +46,14 @@ const App = () => {
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route
+                  path="/admin"
+                  element={
+                    <AdminRoute>
+                      <AdminDashboard />
+                    </AdminRoute>
+                  }
+                />
               </Routes>
             </Suspense>
           </main>

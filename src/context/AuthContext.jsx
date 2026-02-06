@@ -9,6 +9,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -20,25 +21,30 @@ export const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             try {
                 if (user) {
-                    // Check if user exists in Firestore, if not create them
+                    // Fetch full user profile from Firestore
                     if (db) {
                         const userRef = doc(db, 'users', user.uid);
-                        const userSnap = await getDoc(userRef);
+                        let userSnap = await getDoc(userRef);
 
                         if (!userSnap.exists()) {
-                            await setDoc(userRef, {
+                            const newProfile = {
                                 uid: user.uid,
                                 displayName: user.displayName,
                                 email: user.email,
                                 photoURL: user.photoURL,
                                 createdAt: serverTimestamp(),
                                 role: 'user'
-                            });
+                            };
+                            await setDoc(userRef, newProfile);
+                            setUserData(newProfile);
+                        } else {
+                            setUserData(userSnap.data());
                         }
                     }
                     setUser(user);
                 } else {
                     setUser(null);
+                    setUserData(null);
                 }
             } catch (error) {
                 console.error("Error in Auth State Transition:", error);
@@ -88,7 +94,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, loginWithGoogle, login, signup, logout, resetPassword }}>
+        <AuthContext.Provider value={{ user, userData, loading, loginWithGoogle, login, signup, logout, resetPassword }}>
             {children}
         </AuthContext.Provider>
     );
