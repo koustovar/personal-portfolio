@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { ArrowLeft, CheckCircle, Globe, Layout, ShieldCheck, Zap, ShoppingCart, Star, Clock, Smartphone } from 'lucide-react';

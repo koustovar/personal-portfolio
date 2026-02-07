@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
     LayoutDashboard,
@@ -39,6 +40,7 @@ const StatCard = ({ title, value, icon: Icon, trend, color }) => (
 );
 
 const AdminDashboard = () => {
+    const navigate = useNavigate();
     const [stats, setStats] = useState({
         revenue: '$0',
         orders: '0',
@@ -260,16 +262,22 @@ const AdminDashboard = () => {
                             <h3 className="text-lg font-bold text-white mb-6">Quick Actions</h3>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
-                                    onClick={() => alert("User management feature coming soon!")}
+                                    onClick={() => navigate('/admin/users')}
                                     className="p-4 rounded-2xl bg-white/5 border border-white/5 text-xs font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all text-center"
                                 >
                                     View Users
                                 </button>
                                 <button
-                                    onClick={() => alert("Bulk price update feature coming soon!")}
+                                    onClick={() => navigate('/admin/products')}
                                     className="p-4 rounded-2xl bg-white/5 border border-white/5 text-xs font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all text-center"
                                 >
-                                    Update Prices
+                                    Manage Products
+                                </button>
+                                <button
+                                    onClick={() => navigate('/admin/selected-works')}
+                                    className="p-4 rounded-2xl bg-white/5 border border-white/5 text-xs font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all text-center"
+                                >
+                                    Selected Works
                                 </button>
                                 <button
                                     onClick={() => setIsModalOpen(true)}

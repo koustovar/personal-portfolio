@@ -28,7 +28,7 @@ const Contact = () => {
 
                 <div className="mt-24 pt-12 border-t border-primary/10 flex flex-wrap justify-center gap-12 text-gray-400">
                     <a href="https://www.instagram.com/koustov_adhikari" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2">Instagram <ArrowRight className="w-4 h-4 -rotate-45" /></a>
-                    <a href="#" className="hover:text-white transition-colors flex items-center gap-2">LinkedIn <ArrowRight className="w-4 h-4 -rotate-45" /></a>
+                    <a href="https://www.youtube.com/@koustovar" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2">YouTube <ArrowRight className="w-4 h-4 -rotate-45" /></a>
                     <a href="#" className="hover:text-white transition-colors flex items-center gap-2">Twitter <ArrowRight className="w-4 h-4 -rotate-45" /></a>
                 </div>
             </div>

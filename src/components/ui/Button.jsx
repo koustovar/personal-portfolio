@@ -10,7 +10,7 @@ const Button = ({
     onClick,
     ...props
 }) => {
-    const baseStyles = "px-6 py-3 rounded-full font-medium transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer relative overflow-hidden group";
+    const baseStyles = "px-6 py-3 rounded-full font-medium transition-all duration-300 inline-flex items-center justify-center gap-2 cursor-pointer relative overflow-hidden group";
 
     const variants = {
         primary: "bg-primary text-white hover:bg-red-700 border border-transparent shadow-[0_0_20px_rgba(222,28,28,0.3)] hover:shadow-[0_0_30px_rgba(222,28,28,0.5)]",
@@ -26,7 +26,7 @@ const Button = ({
             onClick={onClick}
             {...props}
         >
-            <span className="relative z-10">{children}</span>
+            {children}
         </motion.button>
     );
 };
