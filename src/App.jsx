@@ -22,6 +22,7 @@ const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'));
 const AdminSelectedWorks = lazy(() => import('./pages/admin/AdminSelectedWorks'));
+const Chat = lazy(() => import('./pages/Chat'));
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -42,6 +43,7 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/all-projects" element={<AllProjects />} />
+                <Route path="/chat" element={<Chat />} />
                 <Route path="/marketplace" element={<Marketplace />} />
                 <Route path="/marketplace/:id" element={<TemplateDetail />} />
                 <Route path="/checkout/:id" element={<Checkout />} />
