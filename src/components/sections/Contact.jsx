@@ -1,7 +1,8 @@
 import React from 'react';
 import Button from '../ui/Button';
 import MagneticButton from '../ui/MagneticButton';
-import { Mail, ArrowRight } from 'lucide-react';
+import { Mail, ArrowRight, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Contact = () => {
     return (
@@ -15,21 +16,31 @@ const Contact = () => {
                     Contact me today and let's discuss how we can help you achieve your goals.
                 </p>
 
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                     <MagneticButton>
                         <a href="mailto:furious.arko@gmail.com">
-                            <Button className="px-8 py-4 text-lg bg-white text-black hover:bg-gray-200">
+                            <Button className="px-8 py-4 text-lg bg-white text-black hover:bg-gray-200 min-w-[240px]">
                                 <Mail className="w-5 h-5 mr-2" />
                                 Send an Email
                             </Button>
                         </a>
                     </MagneticButton>
+
+                    <MagneticButton>
+                        <Link to="/custom-query">
+                            <Button className="px-8 py-4 text-lg bg-primary text-white hover:bg-primary/90 min-w-[240px] shadow-[0_10px_30px_rgba(222,28,28,0.2)]">
+                                <Send className="w-5 h-5 mr-2" />
+                                Custom Project
+                            </Button>
+                        </Link>
+                    </MagneticButton>
                 </div>
 
                 <div className="mt-24 pt-12 border-t border-primary/10 flex flex-wrap justify-center gap-12 text-gray-400">
                     <a href="https://www.instagram.com/koustov_adhikari" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2">Instagram <ArrowRight className="w-4 h-4 -rotate-45" /></a>
-                    <a href="https://www.youtube.com/@koustovar" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2">YouTube <ArrowRight className="w-4 h-4 -rotate-45" /></a>
-                    <a href="#" className="hover:text-white transition-colors flex items-center gap-2">Twitter <ArrowRight className="w-4 h-4 -rotate-45" /></a>
+                    <a href="https://www.youtube.com/channel/UCTrilW6zObSj-pqRS6txgSA" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2">YouTube <ArrowRight className="w-4 h-4 -rotate-45" /></a>
+                    <a href="https://x.com/Mr_Adhikari07" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2">Twitter <ArrowRight className="w-4 h-4 -rotate-45" /></a>
+                    <a href="https://github.com/koustovar" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2">GitHub <ArrowRight className="w-4 h-4 -rotate-45" /></a>
                 </div>
             </div>
         </section>

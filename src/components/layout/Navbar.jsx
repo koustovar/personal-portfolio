@@ -22,9 +22,9 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Marketplace', href: '/marketplace' },
+        { name: 'Custom Project', href: '/custom-query' },
         { name: 'Chat', href: '/chat' },
         { name: 'Projects', href: '/#projects' },
-        { name: 'Features', href: '/#features' },
     ];
 
     const handleScrollLink = (e, href) => {

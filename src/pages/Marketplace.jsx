@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShoppingCart, Layout, Smartphone, Globe, Filter, Search, Loader2, ArrowRight, ShieldCheck, Zap, HandCoins, Eye, Star } from 'lucide-react';
+import { ShoppingCart, Layout, Smartphone, Globe, Filter, Search, Loader2, ArrowRight, ShieldCheck, Zap, HandCoins, Eye, Star, MessageSquare, Send } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
@@ -76,7 +76,11 @@ const Marketplace = () => {
             setOrdering(template);
             return;
         }
-        navigate(`/checkout/${template.id}`);
+        if (template.deliveryType === 'query') {
+            navigate(`/custom-query?template=${encodeURIComponent(template.title)}`);
+        } else {
+            navigate(`/checkout/${template.id}`);
+        }
     };
 
     const filteredTemplates = templates.filter(t => {
@@ -176,9 +180,15 @@ const Marketplace = () => {
                                             <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter bg-black/60 backdrop-blur-md text-white border border-white/10">
                                                 {template.category}
                                             </span>
-                                            <div className="px-3 py-1 rounded-full text-[10px] font-black bg-yellow-500/80 text-black flex items-center gap-1 backdrop-blur-md">
-                                                <Star className="w-3 h-3 fill-current" /> {template.rating || '5.0'}
-                                            </div>
+                                            {template.deliveryType === 'query' ? (
+                                                <div className="px-3 py-1 rounded-full text-[10px] font-black bg-blue-500/80 text-white flex items-center gap-1 backdrop-blur-md uppercase">
+                                                    <MessageSquare className="w-3 h-3" /> Build Request
+                                                </div>
+                                            ) : (
+                                                <div className="px-3 py-1 rounded-full text-[10px] font-black bg-yellow-500/80 text-black flex items-center gap-1 backdrop-blur-md">
+                                                    <Star className="w-3 h-3 fill-current" /> {template.rating || '5.0'}
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="absolute bottom-6 right-6">
@@ -212,9 +222,17 @@ const Marketplace = () => {
                                             </Link>
                                             <Button
                                                 onClick={() => handleBuy(template)}
-                                                className="flex-[1.5] py-3.5 rounded-2xl flex items-center justify-center gap-2 text-sm font-black"
+                                                className={`flex-[1.5] py-3.5 rounded-2xl flex items-center justify-center gap-2 text-sm font-black ${template.deliveryType === 'query' ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
                                             >
-                                                Buy Now <ArrowRight className="w-4 h-4" />
+                                                {template.deliveryType === 'query' ? (
+                                                    <>
+                                                        Send Query <Send className="w-4 h-4" />
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Buy Now <ArrowRight className="w-4 h-4" />
+                                                    </>
+                                                )}
                                             </Button>
                                         </div>
                                     </div>
@@ -223,6 +241,29 @@ const Marketplace = () => {
                         </AnimatePresence>
                     </div>
                 )}
+            </div>
+
+            {/* Custom Project CTA */}
+            <div className="container mx-auto px-6 mt-24">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 text-center relative overflow-hidden group"
+                >
+                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[100px] group-hover:bg-primary/30 transition-colors" />
+                    <div className="relative z-10">
+                        <h2 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter mb-4 uppercase">Got a <span className="text-primary underline decoration-primary/30">Custom</span> Legend?</h2>
+                        <p className="text-gray-400 max-w-xl mx-auto mb-10 text-lg">
+                            If you need something built from scratch that isn't in our marketplace, let's negotiate a custom deal tailored to your exact vision.
+                        </p>
+                        <Link to="/custom-query">
+                            <Button className="px-10 py-5 text-xl font-black rounded-2xl shadow-[0_10px_30px_rgba(222,28,28,0.2)]">
+                                Send Project Query <ArrowRight className="ml-2 w-6 h-6" />
+                            </Button>
+                        </Link>
+                    </div>
+                </motion.div>
             </div>
 
             {/* Auth Modal requirement */}

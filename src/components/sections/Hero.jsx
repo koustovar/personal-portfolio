@@ -68,18 +68,65 @@ const Hero = () => {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
-                    className="flex flex-col md:flex-row items-center justify-center gap-4"
+                    className="flex flex-col items-center justify-center gap-6"
                 >
-                    <MagneticButton>
-                        <Link to="/all-projects">
-                            <Button className="min-w-[160px]">View Projects</Button>
-                        </Link>
-                    </MagneticButton>
-                    <MagneticButton>
-                        <a href="#contact">
-                            <Button variant="outline" className="min-w-[160px]">Contact Me</Button>
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+                        <MagneticButton>
+                            <Link to="/all-projects">
+                                <Button className="min-w-[160px]">View Projects</Button>
+                            </Link>
+                        </MagneticButton>
+                        <MagneticButton>
+                            <Link to="/custom-query">
+                                <Button variant="primary" className="min-w-[160px] shadow-[0_0_20px_rgba(222,28,28,0.3)]">Custom Deal</Button>
+                            </Link>
+                        </MagneticButton>
+                        <MagneticButton>
+                            <a href="#contact">
+                                <Button variant="outline" className="min-w-[160px]">Contact Me</Button>
+                            </a>
+                        </MagneticButton>
+                    </div>
+
+                    {/* Social Links */}
+                    <div className="flex items-center gap-6 mt-4">
+                        <a
+                            href="https://github.com/koustovar"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-white transition-colors text-sm"
+                            aria-label="GitHub"
+                        >
+                            GitHub
                         </a>
-                    </MagneticButton>
+                        <a
+                            href="https://x.com/Mr_Adhikari07"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-white transition-colors text-sm"
+                            aria-label="Twitter"
+                        >
+                            Twitter
+                        </a>
+                        <a
+                            href="https://www.youtube.com/channel/UCTrilW6zObSj-pqRS6txgSA"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-white transition-colors text-sm"
+                            aria-label="YouTube"
+                        >
+                            YouTube
+                        </a>
+                        <a
+                            href="https://www.instagram.com/koustov_adhikari"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-white transition-colors text-sm"
+                            aria-label="Instagram"
+                        >
+                            Instagram
+                        </a>
+                    </div>
                 </motion.div>
             </div>
 

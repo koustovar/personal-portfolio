@@ -14,7 +14,8 @@ import {
     CheckCircle,
     Clock,
     AlertCircle,
-    Trash2
+    Trash2,
+    MessageSquare
 } from 'lucide-react';
 import { db } from '../../firebase';
 import { collection, getDocs, query, orderBy, limit, deleteDoc, doc } from 'firebase/firestore';
@@ -45,7 +46,8 @@ const AdminDashboard = () => {
         revenue: '$0',
         orders: '0',
         customers: '0',
-        templates: '0'
+        templates: '0',
+        queries: '0'
     });
     const [recentOrders, setRecentOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -69,12 +71,14 @@ const AdminDashboard = () => {
 
             const customersSnap = await getDocs(collection(db, 'users'));
             const templatesSnap = await getDocs(collection(db, 'templates'));
+            const queriesSnap = await getDocs(collection(db, 'queries'));
 
             setStats({
                 revenue: `$${totalRevenue.toLocaleString()}`,
                 orders: allOrdersSnap.size.toString(),
                 customers: customersSnap.size.toString(),
-                templates: templatesSnap.size.toString()
+                templates: templatesSnap.size.toString(),
+                queries: queriesSnap.size.toString()
             });
         } catch (error) {
             console.error("Error fetching dashboard data:", error);
@@ -134,11 +138,12 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12 text-nowrap">
                     <StatCard title="Total Revenue" value={stats.revenue} icon={TrendingUp} trend={12} color="primary" />
                     <StatCard title="Active Orders" value={stats.orders} icon={ShoppingCart} trend={8} color="blue" />
                     <StatCard title="Total Users" value={stats.customers} icon={Users} trend={15} color="purple" />
-                    <StatCard title="Live Templates" value={stats.templates} icon={Package} color="yellow" />
+                    <StatCard title="Live Assets" value={stats.templates} icon={Package} color="yellow" />
+                    <StatCard title="Project Queries" value={stats.queries} icon={MessageSquare} color="green" />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -278,6 +283,13 @@ const AdminDashboard = () => {
                                     className="p-4 rounded-2xl bg-white/5 border border-white/5 text-xs font-bold text-gray-400 hover:bg-white/10 hover:text-white transition-all text-center"
                                 >
                                     Selected Works
+                                </button>
+                                <button
+                                    onClick={() => navigate('/admin/queries')}
+                                    className="p-4 rounded-2xl bg-primary/10 border border-primary/20 text-xs font-black text-primary hover:bg-primary hover:text-white transition-all text-center flex flex-col items-center justify-center gap-2"
+                                >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span>Project Queries</span>
                                 </button>
                                 <button
                                     onClick={() => setIsModalOpen(true)}

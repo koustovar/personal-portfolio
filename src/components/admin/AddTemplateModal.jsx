@@ -16,6 +16,7 @@ const AddTemplateModal = ({ isOpen, onClose, onRefresh, editingTemplate = null }
         description: '',
         features: '',
         deliveryLink: '',
+        deliveryType: 'instant',
         rating: 5.0
     });
 
@@ -26,7 +27,8 @@ const AddTemplateModal = ({ isOpen, onClose, onRefresh, editingTemplate = null }
                 thumbnail: editingTemplate.thumbnail || editingTemplate.image || '',
                 images: editingTemplate.images || [editingTemplate.image] || [''],
                 features: Array.isArray(editingTemplate.features) ? editingTemplate.features.join(', ') : editingTemplate.features,
-                deliveryLink: editingTemplate.deliveryLink || ''
+                deliveryLink: editingTemplate.deliveryLink || '',
+                deliveryType: editingTemplate.deliveryType || 'instant'
             });
         } else {
             setFormData({
@@ -38,6 +40,7 @@ const AddTemplateModal = ({ isOpen, onClose, onRefresh, editingTemplate = null }
                 description: '',
                 features: '',
                 deliveryLink: '',
+                deliveryType: 'instant',
                 rating: 5.0
             });
         }
@@ -150,6 +153,28 @@ const AddTemplateModal = ({ isOpen, onClose, onRefresh, editingTemplate = null }
                     </div>
                 </div>
 
+                <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Delivery Protocol</label>
+                    <div className="grid grid-cols-2 gap-3">
+                        <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, deliveryType: 'instant' }))}
+                            className={`py-4 rounded-2xl border transition-all flex flex-col items-center gap-2 ${formData.deliveryType === 'instant' ? 'bg-primary/20 border-primary text-white shadow-lg shadow-primary/10' : 'bg-black/40 border-white/5 text-gray-500 hover:border-white/20'}`}
+                        >
+                            <span className="font-black text-[10px] uppercase tracking-tighter">⚡ Instant Delivery</span>
+                            <span className="text-[9px] opacity-60">Buy & Download Now</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, deliveryType: 'query' }))}
+                            className={`py-4 rounded-2xl border transition-all flex flex-col items-center gap-2 ${formData.deliveryType === 'query' ? 'bg-primary/20 border-primary text-white shadow-lg shadow-primary/10' : 'bg-black/40 border-white/5 text-gray-500 hover:border-white/20'}`}
+                        >
+                            <span className="font-black text-[10px] uppercase tracking-tighter">📩 Query System</span>
+                            <span className="text-[9px] opacity-60">Send Deal Request</span>
+                        </button>
+                    </div>
+                </div>
+
                 <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 flex items-center gap-2">
                         <span>📸 Marketplace Thumbnail</span>
@@ -239,17 +264,19 @@ const AddTemplateModal = ({ isOpen, onClose, onRefresh, editingTemplate = null }
                     />
                 </div>
 
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Delivery / Download Link (Sent to Customer)</label>
-                    <input
-                        required
-                        name="deliveryLink"
-                        value={formData.deliveryLink}
-                        onChange={handleChange}
-                        placeholder="e.g. https://drive.google.com/..."
-                        className="w-full bg-black/40 border border-white/5 rounded-2xl py-3 px-5 text-sm font-medium focus:border-primary/50 outline-none transition-all"
-                    />
-                </div>
+                {formData.deliveryType === 'instant' && (
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Delivery / Download Link (Sent to Customer)</label>
+                        <input
+                            required
+                            name="deliveryLink"
+                            value={formData.deliveryLink}
+                            onChange={handleChange}
+                            placeholder="e.g. https://drive.google.com/..."
+                            className="w-full bg-black/40 border border-white/5 rounded-2xl py-3 px-5 text-sm font-medium focus:border-primary/50 outline-none transition-all"
+                        />
+                    </div>
+                )}
 
                 <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Features (comma separated)</label>

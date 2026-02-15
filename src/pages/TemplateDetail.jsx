@@ -3,17 +3,18 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { ArrowLeft, CheckCircle, Globe, Layout, ShieldCheck, Zap, ShoppingCart, Star, Clock, Smartphone } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Globe, Layout, ShieldCheck, Zap, ShoppingCart, Star, Clock, Smartphone, HandCoins, MessageSquare, Send } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
 
 const TemplateDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, loginWithGoogle } = useAuth();
     const [template, setTemplate] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState('');
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
     const initialTemplates = [
         {
@@ -91,6 +92,14 @@ const TemplateDetail = () => {
 
         fetchTemplate();
     }, [id]);
+
+    const handleBuyNow = () => {
+        if (!user) {
+            setShowLoginModal(true);
+            return;
+        }
+        navigate(`/checkout/${template.id}`);
+    };
 
     if (loading) {
         return (
@@ -187,7 +196,7 @@ const TemplateDetail = () => {
                         <div className="bg-surface/30 p-8 rounded-[2rem] border border-white/5 backdrop-blur-xl">
                             <div className="flex items-end justify-between mb-8">
                                 <div>
-                                    <p className="text-gray-500 text-sm uppercase font-bold tracking-widest mb-1">One-time Investment</p>
+                                    <p className="text-gray-500 text-sm uppercase font-bold tracking-widest mb-1">{template.deliveryType === 'query' ? 'Starting Price' : 'One-time Investment'}</p>
                                     <div className="flex items-baseline gap-2">
                                         <span className="text-5xl font-black text-white">${template.price}</span>
                                         <span className="text-gray-500 line-through font-medium">$199</span>
@@ -195,20 +204,50 @@ const TemplateDetail = () => {
                                 </div>
                                 <div className="text-right">
                                     <div className="flex items-center gap-2 text-green-500 font-bold mb-1">
-                                        <Clock className="w-4 h-4" /> {template.deliveryTime || 'Instant'}
+                                        {template.deliveryType === 'query' ? (
+                                            <>
+                                                <MessageSquare className="w-4 h-4" /> Custom Deal
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Clock className="w-4 h-4" /> {template.deliveryTime || 'Instant'}
+                                            </>
+                                        )}
                                     </div>
-                                    <p className="text-gray-500 text-xs">Handover Time</p>
+                                    <p className="text-gray-500 text-xs">{template.deliveryType === 'query' ? 'Inquiry Mode' : 'Handover Time'}</p>
                                 </div>
                             </div>
 
                             <div className="space-y-4">
-                                <Link to={`/checkout/${template.id}`}>
-                                    <Button className="w-full py-4 text-xl rounded-2xl flex items-center justify-center gap-3 shadow-xl">
-                                        <ShoppingCart className="w-6 h-6" /> Buy Template Now
-                                    </Button>
-                                </Link>
-                                <p className="text-center text-gray-500 text-xs">
-                                    100% Secure Checkout • Instant Access • Full Source Code
+                                <Button
+                                    onClick={() => {
+                                        if (!user) {
+                                            setShowLoginModal(true);
+                                            return;
+                                        }
+                                        if (template.deliveryType === 'query') {
+                                            navigate(`/custom-query?template=${encodeURIComponent(template.title)}`);
+                                        } else {
+                                            navigate(`/checkout/${template.id}`);
+                                        }
+                                    }}
+                                    className="w-full py-4 text-xl rounded-2xl flex items-center justify-center gap-3 shadow-xl"
+                                >
+                                    {template.deliveryType === 'query' ? (
+                                        <>
+                                            <Send className="w-6 h-6" /> Send Project Query
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ShoppingCart className="w-6 h-6" /> Buy Template Now
+                                        </>
+                                    )}
+                                </Button>
+                                <p className="text-center text-gray-500 text-xs leading-relaxed px-4">
+                                    {template.deliveryType === 'query'
+                                        ? "This is a custom project. Send a query and we'll reach out via email to finalize the deal."
+                                        : "100% Secure Checkout • Instant Access • Full Source Code"
+                                    }
                                 </p>
                             </div>
                         </div>
@@ -265,6 +304,56 @@ const TemplateDetail = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Login Modal */}
+            <AnimatePresence>
+                {showLoginModal && !user && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center px-6"
+                    >
+                        <div className="absolute inset-0 bg-black/90 backdrop-blur-3xl" onClick={() => setShowLoginModal(false)} />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="relative bg-[#0a0a0a] p-10 md:p-12 rounded-[3rem] border border-white/10 max-w-lg w-full text-center shadow-2xl"
+                        >
+                            <div className="w-24 h-24 bg-primary/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-primary/20">
+                                <HandCoins className="w-12 h-12 text-primary" />
+                            </div>
+                            <h2 className="text-4xl font-black text-white mb-4 italic tracking-tighter">AUTHENTICATION <span className="text-primary">REQUIRED</span></h2>
+                            <p className="text-gray-500 mb-10 leading-relaxed">
+                                Join the elite circle of digital creators. Please sign in to proceed with the acquisition of <span className="text-white font-bold">"{template?.title}"</span>.
+                            </p>
+                            <div className="space-y-4">
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            await loginWithGoogle();
+                                            setShowLoginModal(false);
+                                        } catch (e) {
+                                            console.error(e);
+                                        }
+                                    }}
+                                    className="w-full py-4 bg-white text-black font-black rounded-2xl flex items-center justify-center gap-4 hover:bg-gray-200 transition-all active:scale-95"
+                                >
+                                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-6 h-6" alt="Google" />
+                                    Sign In with Google
+                                </button>
+                                <button
+                                    onClick={() => setShowLoginModal(false)}
+                                    className="w-full py-2 text-gray-600 font-bold hover:text-white transition-colors text-xs uppercase tracking-widest"
+                                >
+                                    Maybe Later
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

@@ -22,6 +22,8 @@ const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'));
 const AdminSelectedWorks = lazy(() => import('./pages/admin/AdminSelectedWorks'));
+const AdminQueries = lazy(() => import('./pages/admin/AdminQueries'));
+const CustomQuery = lazy(() => import('./pages/CustomQuery'));
 const Chat = lazy(() => import('./pages/Chat'));
 
 const PageLoader = () => (
@@ -43,6 +45,7 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/all-projects" element={<AllProjects />} />
+                <Route path="/custom-query" element={<CustomQuery />} />
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/marketplace" element={<Marketplace />} />
                 <Route path="/marketplace/:id" element={<TemplateDetail />} />
@@ -80,6 +83,14 @@ const App = () => {
                   element={
                     <AdminRoute>
                       <AdminSelectedWorks />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/queries"
+                  element={
+                    <AdminRoute>
+                      <AdminQueries />
                     </AdminRoute>
                   }
                 />
